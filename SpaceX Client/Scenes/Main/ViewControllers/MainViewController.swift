@@ -53,8 +53,8 @@ extension MainViewController {
         case .companyBioSection(let companyInfo):
             return buildView(for: companyInfo)
         case .launchesSection(let items):
-            let launch = items[indexPath.row]
-            return buildView(for: launch)
+            let launchViewModel = items[indexPath.row]
+            return buildView(for: launchViewModel)
         }
     }
 
@@ -67,13 +67,13 @@ private extension MainViewController {
     
     struct Identifiers {
         static let companyInfoCell = String(describing: CompanyInfoTableViewCell.self)
-        static let launchCell = String(describing: CompanyInfoTableViewCell.self)
+        static let launchCell = String(describing: LaunchTableViewCell.self)
     }
     
-    func buildView(for launch: Launch) -> UITableViewCell {
+    func buildView(for launchViewModel: LaunchViewModel) -> UITableViewCell {
 
-        if let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: Identifiers.launchCell) {
-            dequeuedCell.textLabel?.text = launch.name
+        if let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: Identifiers.launchCell) as? LaunchTableViewCell {
+            dequeuedCell.configure(with: launchViewModel)
             return dequeuedCell
         }
         
@@ -91,7 +91,7 @@ private extension MainViewController {
     }
     
     func configureTableView() {
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Identifiers.launchCell)
+        tableView.register(LaunchTableViewCell.self, forCellReuseIdentifier: Identifiers.launchCell)
         tableView.register(CompanyInfoTableViewCell.self, forCellReuseIdentifier: Identifiers.companyInfoCell)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 100

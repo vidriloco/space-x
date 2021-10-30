@@ -17,10 +17,8 @@ final class MainViewModel {
     
     private var companyInfo: CompanyInfo?
     
-    private var launches: [Launch]?
-    
-    private var error: ClientRepository.APIError?
-    
+    private var launches: [LaunchViewModel]?
+        
     private var service: ClientRepositable?
     
     weak var delegate: MainViewModelDelegate?
@@ -37,30 +35,54 @@ final class MainViewModel {
     
     func viewDidLoad() {
         updateCompanyInfo()
+        updateLaunchesList()
     }
     
     func updateCompanyInfo() {
-        service?.getCompanyInfo { [self] result in
+        service?.getCompanyInfo { [weak self] result in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let companyInfo):
                 self.companyInfo = companyInfo.toCompanyInfo()
-                DispatchQueue.main.async {
-                    self.delegate?.shouldReloadTable()
-                }
+                self.willUpdateTableView()
             case .failure(let error):
-                self.error = error
-                DispatchQueue.main.async {
-                    self.delegate?.shouldDisplayError()
-                }
+                self.willDisplay(error: error)
             }
         }
+    }
+    
+    func updateLaunchesList() {
+        service?.getLaunches(completion: { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let launches):
+                self.launches = launches.map { LaunchViewModel(with: $0.toLaunch()) }
+                self.willUpdateTableView()
+            case .failure(let error):
+                self.willDisplay(error: error)
+            }
+        })
     }
 }
 
 private extension MainViewModel {
-    private var companyBio: String {
+    var companyBio: String {
         guard let companyInfo = companyInfo else { return "" }
         return "\(companyInfo.companyName) was founded by \(companyInfo.founderName) in \(companyInfo.year). It has now \(companyInfo.employees) employees, \(companyInfo.launchSites) launch sites and is valued at USD \(companyInfo.valuation)"
+    }
+    
+    func willUpdateTableView() {
+        DispatchQueue.main.async {
+            self.delegate?.shouldReloadTable()
+        }
+    }
+    
+    func willDisplay(error: ClientRepository.APIError) {
+        DispatchQueue.main.async {
+            self.delegate?.shouldDisplayError()
+        }
     }
 }
 
@@ -68,7 +90,7 @@ extension MainViewModel {
     
     enum Section {
         case companyBioSection(String)
-        case launchesSection([Launch])
+        case launchesSection([LaunchViewModel])
     }
     
 }

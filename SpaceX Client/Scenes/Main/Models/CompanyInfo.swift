@@ -16,30 +16,6 @@ struct CompanyInfo {
     let valuation: Int
 }
 
-class CompanyInfoViewModel {
-    
-    private let service: ClientRepository
-    
-    private var companyInfo: CompanyInfo?
-    
-    private var error: ClientRepository.APIError?
-    
-    init(service: ClientRepository) {
-        self.service = service
-    }
-    
-    func update() {
-        service.getCompanyInfo { result in
-            switch result {
-            case .success(let companyInfo):
-                self.companyInfo = companyInfo.toCompanyInfo()
-            case .failure(let error):
-                self.error = error
-            }
-        }
-    }
-}
-
 extension ClientRepository.CompanyInfo {
     func toCompanyInfo() -> CompanyInfo {
         return .init(companyName: name,

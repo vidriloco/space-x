@@ -9,13 +9,14 @@ import Foundation
 import UIKit
 
 typealias GetCompanyInfoResponse = (Result<ClientRepository.CompanyInfo, ClientRepository.APIError>) -> Void
+typealias GetLaunchesResponse = (Result<[ClientRepository.Launch], ClientRepository.APIError>) -> Void
 
 protocol ClientRepositable {
     var hostURL: String { get }
     
     func getCompanyInfo(completion: @escaping GetCompanyInfoResponse)
+    func getLaunches(completion: @escaping GetLaunchesResponse)
 }
-
 
 class ClientRepository: ClientRepositable {
 
@@ -44,28 +45,31 @@ class ClientRepository: ClientRepositable {
         task.resume()
     }
     
-    private lazy var urlBuilder = { URLBuilder(host: hostURL) }()
-
-}
-
-extension ClientRepository {
-    enum APIError: Error {
-        case loadingFailed(String)
-        case malformedResponse
+    func getLaunches(completion: @escaping GetLaunchesResponse) {
+        guard let url = urlBuilder.with(path: "/v3/launches").url else { return }
+        
+        let request = URLRequest(url: url)
+        
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let unpackedError = error {
+                completion(.failure(.loadingFailed(unpackedError.localizedDescription)))
+                return
+            }
+            
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            
+            if let unpackedData = data,
+               let launchesList = try? decoder.decode([Launch].self, from: unpackedData) {
+                completion(.success(launchesList))
+                return
+            }
+            
+            completion(.failure(.malformedResponse))
+        }
+        
+        task.resume()
     }
     
-    struct CompanyInfo: Decodable {
-        let name: String
-        let founder: String
-        let founded: Int
-        let employees: Int
-        let launchSites: Int
-        let valuation: Int
-        
-        private enum CodingKeys: String, CodingKey {
-            case launchSites = "launch_sites"
-            case name, founder, founded, employees, valuation
-        }
-    }
-
+    private lazy var urlBuilder = { URLBuilder(host: hostURL) }()
 }
