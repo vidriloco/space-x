@@ -79,23 +79,6 @@ final class FilterViewModel: NSObject {
     }
 }
 
-extension FilterViewModel {
-    
-    class SelectionParams {
-        var orderingOption: OrderingOption = .unordered
-        var launchResultOption: LaunchResultOption = .all
-        var year: Int? = nil
-        
-        init() { }
-        
-        func resetSelection() {
-            orderingOption = .unordered
-            launchResultOption = .all
-            year = nil
-        }
-    }
-}
-
 @objc extension FilterViewModel {
     func didChangeOrderingOption(_ sender: UISegmentedControl) {
         selectedParams.orderingOption = orderingSelectorOptions?[sender.selectedSegmentIndex] ?? .unordered
@@ -112,8 +95,7 @@ extension FilterViewModel: UIPickerViewDelegate {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let rowExcludingDefaultOption = row-1
-        selectedParams.year = yearSelectorOptions?[rowExcludingDefaultOption] ?? nil
+        selectedParams.year = Int(yearSelectorOptionsWithDefaultOption[row])
     }
 }
 

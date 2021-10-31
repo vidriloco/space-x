@@ -16,20 +16,20 @@ class AppCoordinator: Coordinator {
     private let window: UIWindow
 
     private let rootViewController: UINavigationController
-    private let serviceRepository = ClientRepository()
     
+    private let mainViewCoordinator: MainViewCoordinator?
+
     init(window: UIWindow) {
         self.window = window
 
         self.rootViewController = UINavigationController()
+        self.mainViewCoordinator = MainViewCoordinator(presenter: rootViewController)
     }
 
     func start() {
         window.rootViewController = rootViewController
         window.makeKeyAndVisible()
         
-        let mainViewController = MainViewController(with: .init(title: "Space X", filterText: "Filter", service: serviceRepository))
-        
-        rootViewController.pushViewController(mainViewController, animated: true)
+        mainViewCoordinator?.start()
     }
 }

@@ -7,11 +7,16 @@
 
 import UIKit
 
+protocol MainViewControllerDelegate: AnyObject {
+    func willShowFilterOptions(from controller: UIViewController)
+}
+
 class MainViewController: UITableViewController {
 
     private var viewModel: MainViewModel
-    private var filterParams = FilterViewModel.SelectionParams()
-
+    
+    weak var delegate: MainViewControllerDelegate?
+    
     public init(with viewModel: MainViewModel) {
         self.viewModel = viewModel
 
@@ -104,22 +109,7 @@ private extension MainViewController {
     
     
     @objc func willDisplayFilterDialog() {
-        let filterViewModel: FilterViewModel = .init(yearSelectorOptions: Array(2000...2017))
-        filterViewModel.selectedParams = filterParams
-        let filterViewController = FilterViewController(with: filterViewModel)
-        let navigationViewController = UINavigationController(rootViewController: filterViewController)
-        navigationViewController.modalPresentationStyle = UIModalPresentationStyle.pageSheet
-        
-        
-        if let sheet = navigationViewController.sheetPresentationController {
-            sheet.detents = [.medium()]
-            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
-            sheet.prefersEdgeAttachedInCompactHeight = true
-            sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = true
-            sheet.presentedViewController.navigationController?.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: nil, action: nil)
-
-        }
-        present(navigationViewController, animated: true, completion: nil)
+        delegate?.willShowFilterOptions(from: self)
     }
 }
 

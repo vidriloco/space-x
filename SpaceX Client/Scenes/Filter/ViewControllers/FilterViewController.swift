@@ -10,6 +10,7 @@ import UIKit
 class FilterViewController: UIViewController {
 
     private var viewModel: FilterViewModel
+    weak var delegate: FilterViewControllerDelegate?
     
     public init(with viewModel: FilterViewModel) {
         self.viewModel = viewModel
@@ -141,13 +142,12 @@ class FilterViewController: UIViewController {
     }
     
     @objc private func save() {
-        print(viewModel.selectedParams)
-        dismiss(animated: true, completion: nil)
+        delegate?.dismiss(from: self)
     }
     
     @objc private func close() {
         viewModel.selectedParams.resetSelection()
-        dismiss(animated: true, completion: nil)
+        delegate?.dismiss(from: self)
     }
     
     struct Constants {
