@@ -14,6 +14,7 @@ protocol MainViewModelDelegate: AnyObject {
 
 final class MainViewModel {
     let title: String
+    let filterText: String
     
     private var companyInfo: CompanyInfo?
     
@@ -28,8 +29,9 @@ final class MainViewModel {
                 .launchesSection(launches ?? [])]
     }
     
-    init(title: String, service: ClientRepositable) {
+    init(title: String, filterText: String, service: ClientRepositable) {
         self.title = title
+        self.filterText = filterText
         self.service = service
     }
     

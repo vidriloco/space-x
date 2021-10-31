@@ -28,7 +28,7 @@ class AppCoordinator: Coordinator {
         window.rootViewController = rootViewController
         window.makeKeyAndVisible()
         
-        let mainViewController = MainViewController(with: .init(title: "Space X", service: serviceRepository))
+        let mainViewController = MainViewController(with: .init(title: "Space X", filterText: "Filter", service: serviceRepository))
         
         rootViewController.pushViewController(mainViewController, animated: true)
     }

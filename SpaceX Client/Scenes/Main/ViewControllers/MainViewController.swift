@@ -10,7 +10,8 @@ import UIKit
 class MainViewController: UITableViewController {
 
     private var viewModel: MainViewModel
-    
+    private var filterParams = FilterViewModel.SelectionParams()
+
     public init(with viewModel: MainViewModel) {
         self.viewModel = viewModel
 
@@ -29,6 +30,7 @@ class MainViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        configureNavigationBar()
         configureTableView()
         viewModel.delegate = self
         viewModel.viewDidLoad()
@@ -57,10 +59,6 @@ extension MainViewController {
             return buildView(for: launchViewModel)
         }
     }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-    }
 }
 
 private extension MainViewController {
@@ -68,6 +66,13 @@ private extension MainViewController {
     struct Identifiers {
         static let companyInfoCell = String(describing: CompanyInfoTableViewCell.self)
         static let launchCell = String(describing: LaunchTableViewCell.self)
+    }
+    
+    func configureNavigationBar() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: viewModel.filterText,
+                                                            style: .done,
+                                                            target: self,
+                                                            action: #selector(willDisplayFilterDialog))
     }
     
     func buildView(for launchViewModel: LaunchViewModel) -> UITableViewCell {
@@ -95,6 +100,26 @@ private extension MainViewController {
         tableView.register(CompanyInfoTableViewCell.self, forCellReuseIdentifier: Identifiers.companyInfoCell)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 100
+    }
+    
+    
+    @objc func willDisplayFilterDialog() {
+        let filterViewModel: FilterViewModel = .init(yearSelectorOptions: Array(2000...2017))
+        filterViewModel.selectedParams = filterParams
+        let filterViewController = FilterViewController(with: filterViewModel)
+        let navigationViewController = UINavigationController(rootViewController: filterViewController)
+        navigationViewController.modalPresentationStyle = UIModalPresentationStyle.pageSheet
+        
+        
+        if let sheet = navigationViewController.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = true
+            sheet.presentedViewController.navigationController?.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: nil, action: nil)
+
+        }
+        present(navigationViewController, animated: true, completion: nil)
     }
 }
 
