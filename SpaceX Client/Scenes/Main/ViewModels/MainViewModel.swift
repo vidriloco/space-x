@@ -10,6 +10,8 @@ import Foundation
 protocol MainViewModelDelegate: AnyObject {
     func shouldReloadTable()
     func shouldDisplayError()
+    func displayLoadingIndicator()
+    func hideLoadingIndicator()
 }
 
 final class MainViewModel {
@@ -38,6 +40,7 @@ final class MainViewModel {
     }
     
     func viewDidLoad() {
+        delegate?.displayLoadingIndicator()
         updateCompanyInfo()
         updateLaunchesList()
         loadObserver()
@@ -53,11 +56,11 @@ final class MainViewModel {
             switch result {
             case .success(let companyInfo):
                 self.companyInfo = companyInfo.toCompanyInfo()
-                self.group.leave()
             case .failure(let error):
                 self.willDisplay(error: error)
-                self.group.leave()
             }
+            
+            self.group.leave()
         }
     }
     
@@ -67,21 +70,24 @@ final class MainViewModel {
         service?.getLaunches(ordering: ordering, launchStatus: launchStatus, year: year, completion: { [weak self] result in
             guard let self = self else { return }
             
+            if isRefresh { self.delegate?.hideLoadingIndicator() }
+
             switch result {
             case .success(let launches):
                 self.launches = launches.map { LaunchViewModel(with: $0.toLaunch()) }
                 if isRefresh { self.willUpdateTableView() }
-                self.group.leave()
             case .failure(let error):
                 self.willDisplay(error: error)
-                self.group.leave()
             }
+            
+            self.group.leave()
         })
     }
     
     func configureDispatchGroup() {
         group.notify(queue: .main) { [weak self] in
             self?.willUpdateTableView()
+            self?.delegate?.hideLoadingIndicator()
         }
     }
 }
@@ -126,5 +132,6 @@ extension MainViewModel {
                            launchStatus: notification.userInfo?["launch-status"] as? String,
                            year: notification.userInfo?["year"] as? String,
                            isRefresh: true)
+        delegate?.displayLoadingIndicator()
     }
 }

@@ -24,7 +24,6 @@ class FilterViewCoordinator: Coordinator {
     
     func start() {
         let filterViewController = buildFilterViewController()
-        
         presenter.present(filterViewController, animated: true)
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 protocol MainViewControllerDelegate: AnyObject {
     func willShowFilterOptions(from controller: UIViewController)
@@ -119,5 +120,17 @@ extension MainViewController : MainViewModelDelegate {
     
     func shouldDisplayError() {
         // Will handle error
+    }
+    
+    func displayLoadingIndicator() {
+        DispatchQueue.main.async {
+            MBProgressHUD.showAdded(to: self.view, animated: true)
+        }
+    }
+
+    func hideLoadingIndicator() {
+        DispatchQueue.main.async {
+            MBProgressHUD.hide(for: self.view, animated: true)
+        }
     }
 }
