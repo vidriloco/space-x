@@ -18,6 +18,7 @@ struct Launch {
     let videoURL: String?
     let articleURL: String?
     let wikipediaURL: String?
+    let youtubeID: String?
 }
 
 extension ClientRepository.Launch {
@@ -31,6 +32,7 @@ extension ClientRepository.Launch {
                      imageURL: links.image,
                      videoURL: links.video,
                      articleURL: links.article,
-                     wikipediaURL: links.wikipedia)
+                     wikipediaURL: links.wikipedia,
+                     youtubeID: links.youtubeId)
     }
 }

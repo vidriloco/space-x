@@ -30,6 +30,7 @@ extension ClientRepository {
     struct Launch: Decodable {
         struct Links: Decodable {
             let video: String?
+            let youtubeId: String?
             let article: String?
             let wikipedia: String?
             let image: String?
@@ -38,6 +39,7 @@ extension ClientRepository {
                 case video = "video_link"
                 case article = "article_link"
                 case image = "mission_patch_small"
+                case youtubeId = "youtube_id"
                 case wikipedia
             }
         }

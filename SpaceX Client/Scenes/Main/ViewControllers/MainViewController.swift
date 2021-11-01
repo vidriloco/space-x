@@ -10,6 +10,7 @@ import MBProgressHUD
 
 protocol MainViewControllerDelegate: AnyObject {
     func willShowFilterOptions(from controller: UIViewController)
+    func willShowLinkChooserAlert(wikipediaURL: String?, youtubeURL: String?, youtubeIdURL: String?, articleURL: String?)
 }
 
 class MainViewController: UITableViewController {
@@ -64,6 +65,17 @@ extension MainViewController {
             let launchViewModel = items[indexPath.row]
             return buildView(for: launchViewModel)
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if case let .launchesSection(items) = viewModel.entries[indexPath.section] {
+            let launch = items[indexPath.row]
+            delegate?.willShowLinkChooserAlert(wikipediaURL: launch.wikipediaURL,
+                                               youtubeURL: launch.videoURL,
+                                               youtubeIdURL: launch.youtubeIdURL,
+                                               articleURL: launch.articleURL)
+        }
+        
     }
 }
 

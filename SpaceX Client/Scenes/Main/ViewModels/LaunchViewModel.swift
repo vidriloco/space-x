@@ -63,6 +63,23 @@ final class LaunchViewModel {
         return launch.missionSuccessful ? UIImage(named: "success-icon") : UIImage(named: "failure-icon")
     }
     
+    var articleURL: String? {
+        launch.articleURL
+    }
+    
+    var videoURL: String? {
+        launch.videoURL
+    }
+    
+    var wikipediaURL: String? {
+        launch.wikipediaURL
+    }
+    
+    var youtubeIdURL: String? {
+        guard let youtubeID = launch.youtubeID else { return nil }
+        return "youtube://\(youtubeID)"
+    }
+    
     public init(with launch: Launch) {
         self.launch = launch
     }
