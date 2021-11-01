@@ -107,7 +107,6 @@ private extension MainViewController {
         tableView.estimatedRowHeight = 100
     }
     
-    
     @objc func willDisplayFilterDialog() {
         delegate?.willShowFilterOptions(from: self)
     }

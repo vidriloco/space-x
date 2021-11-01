@@ -24,7 +24,6 @@ final class FilterViewModel: NSObject {
         case unordered
     }
     
-    
     let title: String?
     let saveButtonText: String?
     let discardButtonText: String?
@@ -82,6 +81,7 @@ final class FilterViewModel: NSObject {
 @objc extension FilterViewModel {
     func didChangeOrderingOption(_ sender: UISegmentedControl) {
         selectedParams.orderingOption = orderingSelectorOptions?[sender.selectedSegmentIndex] ?? .unordered
+        
     }
     
     func didChangeLaunchResultOption(_ sender: UISegmentedControl) {
@@ -115,6 +115,26 @@ extension FilterViewModel.LaunchResultOption {
         case .success: return "Success"
         case .failure: return "Failure"
         case .all: return "All"
+        }
+    }
+}
+
+extension FilterViewModel.LaunchResultOption {
+    var apiString: String? {
+        switch self {
+        case .success: return "true"
+        case .failure: return "false"
+        case .all: return nil
+        }
+    }
+}
+
+extension FilterViewModel.OrderingOption {
+    var apiString: String? {
+        switch self {
+        case .ascending: return "asc"
+        case .descending: return "desc"
+        case .unordered: return nil
         }
     }
 }

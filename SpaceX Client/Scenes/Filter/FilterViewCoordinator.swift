@@ -8,16 +8,15 @@
 import UIKit
 
 protocol FilterViewControllerDelegate: AnyObject {
-    func dismiss(from controller: UIViewController)
-    func save(from controller: UIViewController)
+    func dismissFilter(from controller: UIViewController)
+    func saveFilterSelection(from controller: UIViewController)
 }
-
 
 class FilterViewCoordinator: Coordinator {
     private let presenter: UINavigationController
     
-    private let selectionParams = FilterViewModel.SelectionParams()
-    private let filterViewModel: FilterViewModel = .init(yearSelectorOptions: Array(2000...2017))
+    private var selectionParams = FilterViewModel.SelectionParams()
+    private let filterViewModel: FilterViewModel = .init(yearSelectorOptions: Array(2006...2021))
     
     init(presenter: UINavigationController) {
         self.presenter = presenter
@@ -28,11 +27,11 @@ class FilterViewCoordinator: Coordinator {
         
         presenter.present(filterViewController, animated: true)
     }
-    
 }
 
 private extension FilterViewCoordinator {
     func buildFilterViewController() -> UIViewController {
+        filterViewModel.selectedParams = selectionParams
         let filterViewController = FilterViewController(with: filterViewModel)
         filterViewController.delegate = self
         let navigationViewController = UINavigationController(rootViewController: filterViewController)
@@ -50,13 +49,25 @@ private extension FilterViewCoordinator {
 }
 
 extension FilterViewCoordinator: FilterViewControllerDelegate {
-    func dismiss(from controller: UIViewController) {
+    func saveFilterSelection(from controller: UIViewController) {
+        dismissFilter(from: controller)
+        
+        var userInfo = [String: String]()
+        
+        if let year = selectionParams.year {
+            userInfo["year"] = "\(year)"
+        }
+        
+        userInfo["ordering"] = selectionParams.orderingOption.apiString
+        userInfo["launch-status"] = selectionParams.launchResultOption.apiString
+
+        NotificationCenter.default.post(
+            name: NotificationMessages.selectionParams,
+            object: nil,
+            userInfo: userInfo)
+    }
+    
+    func dismissFilter(from controller: UIViewController) {
         controller.dismiss(animated: true, completion: nil)
     }
-    
-    func save(from controller: UIViewController) {
-        dismiss(from: controller)
-    }
-    
-    
 }

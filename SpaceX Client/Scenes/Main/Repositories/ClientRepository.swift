@@ -15,7 +15,7 @@ protocol ClientRepositable {
     var hostURL: String { get }
     
     func getCompanyInfo(completion: @escaping GetCompanyInfoResponse)
-    func getLaunches(completion: @escaping GetLaunchesResponse)
+    func getLaunches(ordering: String?, launchStatus: String?, year: String?, completion: @escaping GetLaunchesResponse)
 }
 
 class ClientRepository: ClientRepositable {
@@ -45,8 +45,17 @@ class ClientRepository: ClientRepositable {
         task.resume()
     }
     
-    func getLaunches(completion: @escaping GetLaunchesResponse) {
-        guard let url = urlBuilder.with(path: "/v3/launches").url else { return }
+    func getLaunches(ordering: String? = nil,
+                     launchStatus: String? = nil,
+                     year: String? = nil,
+                     completion: @escaping GetLaunchesResponse) {
+        
+        var params = [String: String]()
+        if year != nil { params["launch_year"] = year }
+        if ordering != nil { params["order"] = ordering }
+        if launchStatus != nil { params["launch_success"] = launchStatus }
+        
+        guard let url = urlBuilder.with(path: "/v3/launches").with(params: params).url else { return }
         
         let request = URLRequest(url: url)
         

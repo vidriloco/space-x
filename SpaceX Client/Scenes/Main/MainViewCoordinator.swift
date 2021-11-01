@@ -32,3 +32,7 @@ extension MainViewCoordinator: MainViewControllerDelegate {
         filterViewCoordinator?.start()
     }
 }
+
+struct NotificationMessages {
+    static let selectionParams = Notification.Name("didReceiveSelectionParams")
+}

@@ -24,6 +24,8 @@ final class MainViewModel {
     
     weak var delegate: MainViewModelDelegate?
     
+    private var group = DispatchGroup()
+    
     var entries: [Section] {
         return [.companyBioSection(companyBio),
                 .launchesSection(launches ?? [])]
@@ -38,34 +40,49 @@ final class MainViewModel {
     func viewDidLoad() {
         updateCompanyInfo()
         updateLaunchesList()
+        loadObserver()
+        configureDispatchGroup()
     }
     
     func updateCompanyInfo() {
+        group.enter()
+        
         service?.getCompanyInfo { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let companyInfo):
                 self.companyInfo = companyInfo.toCompanyInfo()
-                self.willUpdateTableView()
+                self.group.leave()
             case .failure(let error):
                 self.willDisplay(error: error)
+                self.group.leave()
             }
         }
     }
     
-    func updateLaunchesList() {
-        service?.getLaunches(completion: { [weak self] result in
+    func updateLaunchesList(ordering: String? = nil, launchStatus: String? = nil, year: String? = nil, isRefresh: Bool = false) {
+        group.enter()
+        
+        service?.getLaunches(ordering: ordering, launchStatus: launchStatus, year: year, completion: { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let launches):
                 self.launches = launches.map { LaunchViewModel(with: $0.toLaunch()) }
-                self.willUpdateTableView()
+                if isRefresh { self.willUpdateTableView() }
+                self.group.leave()
             case .failure(let error):
                 self.willDisplay(error: error)
+                self.group.leave()
             }
         })
+    }
+    
+    func configureDispatchGroup() {
+        group.notify(queue: .main) { [weak self] in
+            self?.willUpdateTableView()
+        }
     }
 }
 
@@ -95,4 +112,19 @@ extension MainViewModel {
         case launchesSection([LaunchViewModel])
     }
     
+    func loadObserver() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didSelectionParamsChanged(_:)),
+            name: NotificationMessages.selectionParams,
+            object: nil)
+    }
+    
+    @objc func didSelectionParamsChanged(_ notification: NSNotification) {
+        group = DispatchGroup()
+        updateLaunchesList(ordering: notification.userInfo?["ordering"] as? String,
+                           launchStatus: notification.userInfo?["launch-status"] as? String,
+                           year: notification.userInfo?["year"] as? String,
+                           isRefresh: true)
+    }
 }

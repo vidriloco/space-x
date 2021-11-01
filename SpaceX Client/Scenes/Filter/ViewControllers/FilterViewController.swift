@@ -133,21 +133,21 @@ class FilterViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: viewModel.saveButtonText,
                                                             style: .done,
                                                             target: self,
-                                                            action: #selector(save))
+                                                            action: #selector(saveFilterSelection))
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: viewModel.discardButtonText,
                                                            style: .plain,
                                                            target: self,
-                                                           action: #selector(close))
+                                                           action: #selector(dismissFilter))
     }
     
-    @objc private func save() {
-        delegate?.dismiss(from: self)
+    @objc private func saveFilterSelection() {
+        delegate?.saveFilterSelection(from: self)
     }
     
-    @objc private func close() {
+    @objc private func dismissFilter() {
         viewModel.selectedParams.resetSelection()
-        delegate?.dismiss(from: self)
+        delegate?.dismissFilter(from: self)
     }
     
     struct Constants {
