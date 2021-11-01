@@ -7,12 +7,16 @@
 
 import Foundation
 
+// MARK: - MainViewModelDelegate
+
 protocol MainViewModelDelegate: AnyObject {
     func willReloadTable()
     func willDisplayError()
     func displayLoadingIndicator()
     func hideLoadingIndicator()
 }
+
+// MARK: - MainViewModel
 
 final class MainViewModel {
     let title: String
@@ -112,6 +116,8 @@ final class MainViewModel {
     }
 }
 
+// MARK: - MainViewModel (private extensions)
+
 private extension MainViewModel {
     var companyBio: String? {
         guard let companyInfo = companyInfo else { return nil }
@@ -129,7 +135,17 @@ private extension MainViewModel {
             self.delegate?.willDisplayError()
         }
     }
+    
+    func loadObserver() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didSelectionParamsChanged(_:)),
+            name: NotificationMessages.selectionParams,
+            object: nil)
+    }
 }
+
+// MARK: - MainViewModel (Section type definition)
 
 extension MainViewModel {
     
@@ -139,15 +155,12 @@ extension MainViewModel {
         case emptyLaunchesSection
     }
     
-    func loadObserver() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(didSelectionParamsChanged(_:)),
-            name: NotificationMessages.selectionParams,
-            object: nil)
-    }
-    
-    @objc func didSelectionParamsChanged(_ notification: NSNotification) {
+}
+
+// MARK: - MainViewModel (@objc extensions)
+
+@objc extension MainViewModel {
+    func didSelectionParamsChanged(_ notification: NSNotification) {
         errors.removeAll()
         dispatchGroup = DispatchGroup()
         updateLaunchesList(ordering: notification.userInfo?["ordering"] as? String,

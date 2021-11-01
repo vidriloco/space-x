@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - MainViewCoordinator
+
 class MainViewCoordinator: Coordinator {
     private let presenter: UINavigationController
     private let serviceRepository = ClientRepository()
@@ -26,6 +28,8 @@ class MainViewCoordinator: Coordinator {
     }
     
 }
+
+// MARK: - MainViewCoordinator (MainViewControllerDelegate adherence)
 
 extension MainViewCoordinator: MainViewControllerDelegate {
     func willShowFilterOptions(from controller: UIViewController) {
@@ -76,6 +80,8 @@ extension MainViewCoordinator: MainViewControllerDelegate {
         }
     }
 }
+
+// MARK: - NotificationMessages
 
 struct NotificationMessages {
     static let selectionParams = Notification.Name("didReceiveSelectionParams")

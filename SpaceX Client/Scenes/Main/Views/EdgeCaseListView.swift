@@ -7,9 +7,13 @@
 
 import UIKit
 
+// MARK: - EdgeCaseListViewDelegate
+
 protocol EdgeCaseListViewDelegate: AnyObject {
     func didTapActionButton()
 }
+
+// MARK: - EdgeCaseListView
 
 class EdgeCaseListView: UIView {
 
@@ -104,6 +108,8 @@ class EdgeCaseListView: UIView {
     }
 
 }
+
+// MARK: - EdgeCaseListView (Constants)
 
 extension EdgeCaseListView {
     struct Constants {

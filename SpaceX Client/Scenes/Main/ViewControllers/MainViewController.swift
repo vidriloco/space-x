@@ -8,10 +8,14 @@
 import UIKit
 import MBProgressHUD
 
+// MARK: - MainViewControllerDelegate
+
 protocol MainViewControllerDelegate: AnyObject {
     func willShowFilterOptions(from controller: UIViewController)
     func willShowLinkChooserAlert(wikipediaURL: String?, youtubeURL: String?, youtubeIdURL: String?, articleURL: String?)
 }
+
+// MARK: - MainViewController (Base class)
 
 class MainViewController: UITableViewController {
 
@@ -42,6 +46,8 @@ class MainViewController: UITableViewController {
         viewModel.viewDidLoad()
     }
 }
+
+// MARK: - MainViewController (TableView methods)
 
 extension MainViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -101,15 +107,17 @@ extension MainViewController {
             return indexPath
         }
     }
-}
-
-private extension MainViewController {
     
     struct Identifiers {
         static let companyInfoCell = String(describing: CompanyInfoTableViewCell.self)
         static let launchCell = String(describing: LaunchTableViewCell.self)
         static let emptyLaunchListCell = String(describing: EmptyResultsTableViewCell.self)
     }
+}
+
+// MARK: - MainViewController (View configuration private methods)
+
+private extension MainViewController {
     
     func configureNavigationBar() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: viewModel.filterText,
@@ -161,6 +169,8 @@ private extension MainViewController {
     }
 }
 
+// MARK: - MainViewController (MainViewModelDelegate conformance)
+
 extension MainViewController : MainViewModelDelegate {
     func willReloadTable() {
         tableView.backgroundView = nil
@@ -191,11 +201,15 @@ extension MainViewController : MainViewModelDelegate {
     }
 }
 
+// MARK: - MainViewController (EdgeCaseListViewDelegate conformance)
+
 extension MainViewController: EdgeCaseListViewDelegate {
     func didTapActionButton() {
         viewModel.viewNeedsUpdate()
     }
 }
+
+// MARK: - MainViewController (Constants)
 
 extension MainViewController {
     struct Constants {

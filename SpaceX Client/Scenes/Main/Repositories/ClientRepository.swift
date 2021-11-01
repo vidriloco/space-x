@@ -11,7 +11,7 @@ import UIKit
 typealias GetCompanyInfoResponse = (Result<ClientRepository.CompanyInfo, ClientRepository.APIError>) -> Void
 typealias GetLaunchesResponse = (Result<[ClientRepository.Launch], ClientRepository.APIError>) -> Void
 
-
+// MARK: - ClientRepositable
 
 protocol ClientRepositable {
     var hostURL: String { get }
@@ -19,6 +19,8 @@ protocol ClientRepositable {
     func getCompanyInfo(completion: @escaping GetCompanyInfoResponse)
     func getLaunches(ordering: String?, launchStatus: String?, year: String?, completion: @escaping GetLaunchesResponse)
 }
+
+// MARK: - ClientRepository
 
 class ClientRepository: ClientRepositable {
 

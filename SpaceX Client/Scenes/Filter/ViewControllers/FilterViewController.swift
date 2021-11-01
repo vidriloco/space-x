@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - FilterViewController
+
 class FilterViewController: UIViewController {
 
     private var viewModel: FilterViewModel
@@ -160,6 +162,8 @@ class FilterViewController: UIViewController {
         static let spacingAfterLabels: CGFloat = 30
     }
 }
+
+// MARK: - FilterViewController (UIPickerViewDataSource adherence)
 
 extension FilterViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {

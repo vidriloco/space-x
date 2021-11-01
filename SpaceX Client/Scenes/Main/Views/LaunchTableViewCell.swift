@@ -8,6 +8,8 @@
 import UIKit
 import SDWebImage
 
+// MARK: - LaunchTableViewCell
+
 class LaunchTableViewCell: UITableViewCell {
 
     private var missionIconImageView: UIImageView = {
@@ -113,6 +115,8 @@ class LaunchTableViewCell: UITableViewCell {
         configureConstraints()
     }
 }
+
+// MARK: - LaunchTableViewCell (Constants and private methods)
 
 private extension LaunchTableViewCell {
 

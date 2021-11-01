@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 
+// MARK: - CompanyInfoTableViewCell
+
 class CompanyInfoTableViewCell: UITableViewCell {
     
     private let descriptionLabel: UILabel = {
@@ -24,6 +26,8 @@ class CompanyInfoTableViewCell: UITableViewCell {
         configureViews()
     }
 }
+
+// MARK: - CompanyInfoTableViewCell (Constants and private extensions)
 
 private extension CompanyInfoTableViewCell {
 

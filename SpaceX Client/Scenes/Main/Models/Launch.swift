@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - Launch Model
+
 struct Launch {
     let missionName: String
     let date: Date
@@ -20,6 +22,8 @@ struct Launch {
     let wikipediaURL: String?
     let youtubeID: String?
 }
+
+// MARK: - ClientRepository.Launch transformation into Launch Model
 
 extension ClientRepository.Launch {
     func toLaunch() -> Launch {

@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - CompanyInfo Model
+
 struct CompanyInfo {
     let companyName: String
     let founderName: String
@@ -15,6 +17,8 @@ struct CompanyInfo {
     let launchSites: Int
     let valuation: Int
 }
+
+// MARK: - ClientRepository.CompanyInfo transformation into CompanyInfo Model
 
 extension ClientRepository.CompanyInfo {
     func toCompanyInfo() -> CompanyInfo {

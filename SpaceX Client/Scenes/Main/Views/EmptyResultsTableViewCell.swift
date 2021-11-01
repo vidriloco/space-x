@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - EmptyResultsTableViewCell
+
 class EmptyResultsTableViewCell: UITableViewCell {
     
     private let edgeCaseView: EdgeCaseListView = {
@@ -15,11 +17,6 @@ class EmptyResultsTableViewCell: UITableViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
-    
-}
-
-extension EmptyResultsTableViewCell {
     
     func configure() {
         contentView.addSubview(edgeCaseView)
@@ -31,7 +28,12 @@ extension EmptyResultsTableViewCell {
             contentView.bottomAnchor.constraint(equalTo: edgeCaseView.bottomAnchor),
         ])
     }
+}
 
+// MARK: - EmptyResultsTableViewCell (Constants and private methods)
+
+private extension EmptyResultsTableViewCell {
+    
     struct Constants {
         static let horizontalMargin: CGFloat = 20
         static let verticalMargin: CGFloat = 20

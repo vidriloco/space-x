@@ -6,9 +6,9 @@
 //
 
 import Foundation
-
-import Foundation
 import UIKit
+
+// MARK: - FilterViewModel
 
 final class FilterViewModel: NSObject {
     
@@ -78,6 +78,8 @@ final class FilterViewModel: NSObject {
     }
 }
 
+// MARK: - FilterViewModel (@objc extensions)
+
 @objc extension FilterViewModel {
     func didChangeOrderingOption(_ sender: UISegmentedControl) {
         selectedParams.orderingOption = orderingSelectorOptions?[sender.selectedSegmentIndex] ?? .unordered
@@ -89,6 +91,8 @@ final class FilterViewModel: NSObject {
     }
 }
 
+// MARK: - UIPickerViewDelegate
+
 extension FilterViewModel: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         yearSelectorOptionsWithDefaultOption[row]
@@ -99,25 +103,7 @@ extension FilterViewModel: UIPickerViewDelegate {
     }
 }
 
-extension FilterViewModel.OrderingOption {
-    var optionTextInSelector: String {
-        switch self {
-        case .ascending: return "Ascending"
-        case .descending: return "Descending"
-        case .unordered: return "None"
-        }
-    }
-}
-
-extension FilterViewModel.LaunchResultOption {
-    var launchTextInSelector: String {
-        switch self {
-        case .success: return "Success"
-        case .failure: return "Failure"
-        case .all: return "All"
-        }
-    }
-}
+// MARK: - FilterViewModel.LaunchResultOption extensions
 
 extension FilterViewModel.LaunchResultOption {
     var apiString: String? {
@@ -127,7 +113,17 @@ extension FilterViewModel.LaunchResultOption {
         case .all: return nil
         }
     }
+    
+    var launchTextInSelector: String {
+        switch self {
+        case .success: return "Success"
+        case .failure: return "Failure"
+        case .all: return "All"
+        }
+    }
 }
+
+// MARK: - FilterViewModel.OrderingOption extensions
 
 extension FilterViewModel.OrderingOption {
     var apiString: String? {
@@ -135,6 +131,14 @@ extension FilterViewModel.OrderingOption {
         case .ascending: return "asc"
         case .descending: return "desc"
         case .unordered: return nil
+        }
+    }
+    
+    var optionTextInSelector: String {
+        switch self {
+        case .ascending: return "Ascending"
+        case .descending: return "Descending"
+        case .unordered: return "None"
         }
     }
 }

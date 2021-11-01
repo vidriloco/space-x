@@ -7,10 +7,14 @@
 
 import UIKit
 
+// MARK: - FilterViewControllerDelegate
+
 protocol FilterViewControllerDelegate: AnyObject {
     func dismissFilter(from controller: UIViewController)
     func saveFilterSelection(from controller: UIViewController)
 }
+
+// MARK: - FilterViewCoordinator
 
 class FilterViewCoordinator: Coordinator {
     private let presenter: UINavigationController
@@ -27,6 +31,8 @@ class FilterViewCoordinator: Coordinator {
         presenter.present(filterViewController, animated: true)
     }
 }
+
+// MARK: - FilterViewCoordinator (private methods extension)
 
 private extension FilterViewCoordinator {
     func buildFilterViewController() -> UIViewController {
@@ -47,6 +53,8 @@ private extension FilterViewCoordinator {
         return navigationViewController
     }
 }
+
+// MARK: - FilterViewCoordinator (FilterViewControllerDelegate adherence)
 
 extension FilterViewCoordinator: FilterViewControllerDelegate {
     func saveFilterSelection(from controller: UIViewController) {
