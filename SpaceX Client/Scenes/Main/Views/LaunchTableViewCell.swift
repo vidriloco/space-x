@@ -78,7 +78,7 @@ class LaunchTableViewCell: UITableViewCell {
         stackView.axis = .vertical
         stackView.alignment = .leading
         stackView.distribution = .equalSpacing
-        stackView.spacing = 2
+        stackView.spacing = Constants.spacingBetweenRows
 
         return stackView
     }()
@@ -88,8 +88,7 @@ class LaunchTableViewCell: UITableViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.alignment = .top
-        stackView.distribution = .equalSpacing
-        stackView.spacing = 15
+        stackView.setCustomSpacing(Constants.spacingBetweenColumns, after: missionIconImageView)
         return stackView
     }()
     
@@ -103,7 +102,13 @@ class LaunchTableViewCell: UITableViewCell {
         dateLabel.attributedText = NSMutableAttributedString().bold(launchViewModel.dateLabelText).normal(launchViewModel.dateLabelValue)
         rocketLabel.attributedText = NSMutableAttributedString().bold(launchViewModel.rocketLabelText).normal(launchViewModel.rocketLabelValue)
         distanceInTimeLabel.attributedText = NSMutableAttributedString().bold(launchViewModel.daysLabelText).normal(launchViewModel.daysLabelValue)
-        missionIconImageView.sd_setImage(with: URL(string: launchViewModel.missionPatchImageURL), completed: nil)
+        
+        if let imageURL = launchViewModel.missionPatchImageURL {
+            missionIconImageView.sd_setImage(with: URL(string: imageURL), completed: nil)
+        } else {
+            missionIconImageView.image = UIImage(named: "no-image-icon")
+        }
+        
         iconImageView.image = launchViewModel.missionStatusImage
         configureConstraints()
     }
@@ -131,5 +136,7 @@ private extension LaunchTableViewCell {
         static let verticalMargin: CGFloat = 20
         static let missionPatchIconDimensions: CGFloat = 30
         static let iconDimensions: CGFloat = 25
+        static let spacingBetweenColumns: CGFloat = 15
+        static let spacingBetweenRows: CGFloat = 2
     }
 }

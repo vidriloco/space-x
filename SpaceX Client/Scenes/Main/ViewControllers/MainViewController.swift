@@ -37,7 +37,6 @@ class MainViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureNavigationBar()
         configureTableView()
         viewModel.delegate = self
         viewModel.viewDidLoad()
@@ -46,11 +45,17 @@ class MainViewController: UITableViewController {
 
 extension MainViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.entries.count
+        
+        if !viewModel.sections.isEmpty {
+            configureNavigationBar()
+        }
+        
+        return viewModel.sections.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if case let .launchesSection(items) = viewModel.entries[section] {
+
+        if case let .launchesSection(items) = viewModel.sections[section] {
             return items.count
         } else {
             return 1
@@ -58,24 +63,43 @@ extension MainViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch viewModel.entries[indexPath.section] {
+        
+        switch viewModel.sections[indexPath.section] {
         case .companyBioSection(let companyInfo):
             return buildView(for: companyInfo)
         case .launchesSection(let items):
             let launchViewModel = items[indexPath.row]
             return buildView(for: launchViewModel)
+        case .emptyLaunchesSection:
+            return buildEmptyView()
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if case .emptyLaunchesSection = viewModel.sections[indexPath.section] {
+            return Constants.emptyResultsTableViewCellHeight
+        } else {
+            return UITableView.automaticDimension
         }
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if case let .launchesSection(items) = viewModel.entries[indexPath.section] {
+        if case let .launchesSection(items) = viewModel.sections[indexPath.section] {
             let launch = items[indexPath.row]
             delegate?.willShowLinkChooserAlert(wikipediaURL: launch.wikipediaURL,
                                                youtubeURL: launch.videoURL,
                                                youtubeIdURL: launch.youtubeIdURL,
                                                articleURL: launch.articleURL)
         }
-        
+    }
+    
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        switch viewModel.sections[indexPath.section] {
+        case .emptyLaunchesSection, .companyBioSection:
+            return nil
+        case .launchesSection:
+            return indexPath
+        }
     }
 }
 
@@ -84,6 +108,7 @@ private extension MainViewController {
     struct Identifiers {
         static let companyInfoCell = String(describing: CompanyInfoTableViewCell.self)
         static let launchCell = String(describing: LaunchTableViewCell.self)
+        static let emptyLaunchListCell = String(describing: EmptyResultsTableViewCell.self)
     }
     
     func configureNavigationBar() {
@@ -113,11 +138,22 @@ private extension MainViewController {
         return UITableViewCell()
     }
     
+    func buildEmptyView() -> UITableViewCell {
+        
+        if let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: Identifiers.emptyLaunchListCell) as? EmptyResultsTableViewCell {
+            dequeuedCell.configure()
+            return dequeuedCell
+        }
+        
+        return UITableViewCell()
+    }
+    
     func configureTableView() {
         tableView.register(LaunchTableViewCell.self, forCellReuseIdentifier: Identifiers.launchCell)
         tableView.register(CompanyInfoTableViewCell.self, forCellReuseIdentifier: Identifiers.companyInfoCell)
+        tableView.register(EmptyResultsTableViewCell.self, forCellReuseIdentifier: Identifiers.emptyLaunchListCell)
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 100
+        tableView.estimatedRowHeight = Constants.estimatedRowHeight
     }
     
     @objc func willDisplayFilterDialog() {
@@ -126,12 +162,20 @@ private extension MainViewController {
 }
 
 extension MainViewController : MainViewModelDelegate {
-    func shouldReloadTable() {
+    func willReloadTable() {
+        tableView.backgroundView = nil
         tableView.reloadData()
     }
     
-    func shouldDisplayError() {
-        // Will handle error
+    func willDisplayError() {
+        let edgeCaseView = EdgeCaseListView(with: "Our apologies",
+                                            message: "We could not retrieve the stuff we wanted to show you",
+                                            iconName: "error-icon",
+                                            buttonText: "Retry" )
+        edgeCaseView.delegate = self
+        tableView.backgroundView = edgeCaseView
+        navigationItem.rightBarButtonItem = nil
+        tableView.reloadData()
     }
     
     func displayLoadingIndicator() {
@@ -144,5 +188,18 @@ extension MainViewController : MainViewModelDelegate {
         DispatchQueue.main.async {
             MBProgressHUD.hide(for: self.view, animated: true)
         }
+    }
+}
+
+extension MainViewController: EdgeCaseListViewDelegate {
+    func didTapActionButton() {
+        viewModel.viewNeedsUpdate()
+    }
+}
+
+extension MainViewController {
+    struct Constants {
+        static let emptyResultsTableViewCellHeight: CGFloat = 300
+        static let estimatedRowHeight: CGFloat = 100
     }
 }

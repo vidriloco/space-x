@@ -20,8 +20,8 @@ class CompanyInfoTableViewCell: UITableViewCell {
     }()
     
     func configure(with description: String) {
-        configureViews()
         descriptionLabel.text = description
+        configureViews()
     }
 }
 

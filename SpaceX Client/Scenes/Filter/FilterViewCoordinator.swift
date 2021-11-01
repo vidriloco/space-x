@@ -41,6 +41,7 @@ private extension FilterViewCoordinator {
             sheet.prefersScrollingExpandsWhenScrolledToEdge = false
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = true
+            sheet.preferredCornerRadius = 20
         }
         
         return navigationViewController

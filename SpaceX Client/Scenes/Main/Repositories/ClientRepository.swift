@@ -11,6 +11,8 @@ import UIKit
 typealias GetCompanyInfoResponse = (Result<ClientRepository.CompanyInfo, ClientRepository.APIError>) -> Void
 typealias GetLaunchesResponse = (Result<[ClientRepository.Launch], ClientRepository.APIError>) -> Void
 
+
+
 protocol ClientRepositable {
     var hostURL: String { get }
     
@@ -60,6 +62,7 @@ class ClientRepository: ClientRepositable {
         let request = URLRequest(url: url)
         
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            
             if let unpackedError = error {
                 completion(.failure(.loadingFailed(unpackedError.localizedDescription)))
                 return

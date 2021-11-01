@@ -120,13 +120,16 @@ class FilterViewController: UIViewController {
         view.addSubview(formContainerView)
         
         NSLayoutConstraint.activate([
-            view.leadingAnchor.constraint(equalTo: formContainerView.leadingAnchor, constant: -Constants.horizontalMargin),
+            formContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.horizontalMargin),
             view.trailingAnchor.constraint(equalTo: formContainerView.trailingAnchor, constant: Constants.horizontalMargin),
-            view.safeAreaLayoutGuide.topAnchor.constraint(equalTo: formContainerView.topAnchor, constant: -Constants.verticalMargin),
+            formContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.verticalMargin),
             view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: formContainerView.bottomAnchor, constant: Constants.verticalMargin),
             orderingOptionsSegmentedControl.heightAnchor.constraint(equalToConstant: Constants.spacingAfterLabels),
+            orderingOptionsSegmentedControl.widthAnchor.constraint(equalTo: formContainerView.widthAnchor),
             launchResultSegmentedControl.heightAnchor.constraint(equalToConstant: Constants.spacingAfterLabels),
-            yearsPickerView.heightAnchor.constraint(equalToConstant: Constants.yearsPickerHeight)
+            launchResultSegmentedControl.widthAnchor.constraint(equalTo: formContainerView.widthAnchor),
+            yearsPickerView.heightAnchor.constraint(equalToConstant: Constants.yearsPickerHeight),
+            yearsPickerView.widthAnchor.constraint(equalTo: formContainerView.widthAnchor)
         ])
         
         navigationItem.title = viewModel.title

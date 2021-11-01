@@ -55,8 +55,8 @@ final class LaunchViewModel {
         return days.formatted()
     }
     
-    var missionPatchImageURL: String {
-        return launch.imageURL ?? ""
+    var missionPatchImageURL: String? {
+        return launch.imageURL
     }
     
     var missionStatusImage: UIImage? {
