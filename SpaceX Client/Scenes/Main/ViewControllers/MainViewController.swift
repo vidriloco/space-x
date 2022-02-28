@@ -92,6 +92,7 @@ extension MainViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if case let .launchesSection(items) = viewModel.sections[indexPath.section] {
             let launch = items[indexPath.row]
+            tableView.deselectRow(at: indexPath, animated: true)
             delegate?.willShowLinkChooserAlert(wikipediaURL: launch.wikipediaURL,
                                                youtubeURL: launch.videoURL,
                                                youtubeIdURL: launch.youtubeIdURL,
